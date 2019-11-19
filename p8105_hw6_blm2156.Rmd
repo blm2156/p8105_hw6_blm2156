@@ -40,4 +40,17 @@ modelr::add_predictions(reg_model1) %>%
 res_plot1
   
 ```
+## Comparison models
+Predictors for this birthweight model are length at birth and gestational age.
+```{r}
+comp_reg_model1 = lm(bwt ~ blength + gaweeks, data = btw)
+
+comp_reg_model1
+```
+Predictors for this birthweight model are head circumference, length, sex, and all interactions (including the three-way interaction) between these
+```{r}
+comp_reg_model2 = lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = btw)
+
+comp_reg_model2
+```
 
