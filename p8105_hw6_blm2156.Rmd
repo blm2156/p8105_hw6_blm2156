@@ -20,3 +20,10 @@ btw = read_csv("./data/birthweight.csv") %>%
   ))
 btw
 ```
+## Regression Model for Birthweight
+```{r}
+reg_model1 = lm(bwt ~ babysex + gaweeks + momage + mheight + parity + ppbmi + pnumlbw + smoken, data = btw)
+
+reg_model1
+```
+
