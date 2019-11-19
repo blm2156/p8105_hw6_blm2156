@@ -21,9 +21,23 @@ btw = read_csv("./data/birthweight.csv") %>%
 btw
 ```
 ## Regression Model for Birthweight
+
+This predictors that were selected for this regression model (baby'sex, gestational age in weeks, mother's age at delivery, mother's height, parity, mother's pre-pregnancy BMI, average number of cigarettes smoked per day during pregnancy) were selected based on literatures reviews on child's birthweight.
 ```{r}
 reg_model1 = lm(bwt ~ babysex + gaweeks + momage + mheight + parity + ppbmi + pnumlbw + smoken, data = btw)
 
 reg_model1
+```
+## Plot of model residuals against fitted values
+```{r}
+res_plot1 = 
+btw%>%
+modelr::add_residuals(reg_model1) %>%
+modelr::add_predictions(reg_model1) %>%
+  ggplot(aes(x = pred, y = resid)) +
+  geom_point()
+
+res_plot1
+  
 ```
 
