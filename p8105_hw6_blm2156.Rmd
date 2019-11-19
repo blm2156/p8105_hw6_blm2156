@@ -6,6 +6,7 @@ output: github_document
 
 ```{r}
 library(tidyverse)
+library(modelr)
 ```
 
 # Problem 1
@@ -52,5 +53,29 @@ Predictors for this birthweight model are head circumference, length, sex, and a
 comp_reg_model2 = lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = btw)
 
 comp_reg_model2
+```
+Cross Validation Prediction Error
+```{r, warning = FALSE}
+cv_bwt = crossv_mc(btw, 100)
+
+cv_bwt = 
+  cv_bwt %>%
+  mutate(reg_model1 = map(train, ~lm(bwt ~ babysex + gaweeks + momage + mheight + parity + ppbmi + pnumlbw + smoken, data = .x)),
+  comp_reg_model1 = map(train, ~lm(bwt ~ blength + gaweeks, data = .x)),
+  comp_reg_model2 = map(train, ~lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = .x))
+  ) %>%
+  mutate(rmse_reg_model1 = map2_dbl(reg_model1, test, ~rmse(model = .x, data = .y)),
+  rmse_comp_reg_model1 = map2_dbl(comp_reg_model1, test, ~rmse(model = .x, data = .y)),
+  rmse_comp_reg_model2 = map2_dbl(comp_reg_model2, test, ~rmse(model = .x, data = .y)))
+
+cv_bwt %>%
+  select(starts_with("rmse")) %>%
+  pivot_longer(
+    everything(),
+    names_to = "model",
+    values_to = "rmse",
+    names_prefix = "rmse_") %>% 
+  mutate(model = fct_inorder(model)) %>% 
+  ggplot(aes(x = model, y = rmse)) + geom_violin(color = "blue")
 ```
 
