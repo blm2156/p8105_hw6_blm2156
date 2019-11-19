@@ -35,7 +35,7 @@ btw%>%
 modelr::add_residuals(reg_model1) %>%
 modelr::add_predictions(reg_model1) %>%
   ggplot(aes(x = pred, y = resid)) +
-  geom_point()
+  geom_point(color = "orange")
 
 res_plot1
   
