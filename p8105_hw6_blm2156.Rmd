@@ -10,6 +10,7 @@ library(modelr)
 ```
 
 # Problem 1
+
 ```{r}
 btw = read_csv("./data/birthweight.csv") %>%
   janitor::clean_names() %>%
@@ -21,15 +22,18 @@ btw = read_csv("./data/birthweight.csv") %>%
   ))
 btw
 ```
+
 ## Regression Model for Birthweight
 
-This predictors that were selected for this regression model (baby'sex, gestational age in weeks, mother's age at delivery, mother's height, parity, mother's pre-pregnancy BMI, average number of cigarettes smoked per day during pregnancy) were selected based on literatures reviews on child's birthweight.
+The predictors that were selected for this regression model (baby'sex, gestational age in weeks, mother's age at delivery, mother's height, parity, mother's pre-pregnancy BMI, average number of cigarettes smoked per day during pregnancy) were selected based on literature reviews on child's birthweight. This model was constructed based on more of a hypothesized structure for the factors that underly birthweight. 
 ```{r}
 reg_model1 = lm(bwt ~ babysex + gaweeks + momage + mheight + parity + ppbmi + pnumlbw + smoken, data = btw)
 
 reg_model1
 ```
+
 ## Plot of model residuals against fitted values
+
 ```{r}
 res_plot1 = 
 btw%>%
@@ -41,20 +45,24 @@ modelr::add_predictions(reg_model1) %>%
 res_plot1
   
 ```
+
 ## Comparison models
+
 Predictors for this birthweight model are length at birth and gestational age.
 ```{r}
 comp_reg_model1 = lm(bwt ~ blength + gaweeks, data = btw)
 
 comp_reg_model1
 ```
-Predictors for this birthweight model are head circumference, length, sex, and all interactions (including the three-way interaction) between these
+Predictors for this birthweight model are head circumference, length, sex, and all interactions (including the three-way interaction) between these predictors. 
 ```{r}
 comp_reg_model2 = lm(bwt ~ bhead + blength + babysex + bhead*blength + bhead*babysex + blength*babysex + bhead*blength*babysex, data = btw)
 
 comp_reg_model2
 ```
-Cross Validation Prediction Error
+
+##Cross Validation Prediction Error
+
 ```{r, warning = FALSE}
 cv_bwt = crossv_mc(btw, 100)
 
@@ -77,5 +85,38 @@ cv_bwt %>%
     names_prefix = "rmse_") %>% 
   mutate(model = fct_inorder(model)) %>% 
   ggplot(aes(x = model, y = rmse)) + geom_violin(color = "blue")
+```
+
+# Problem 2
+
+```{r}
+weather_df = 
+  rnoaa::meteo_pull_monitors(
+    c("USW00094728"),
+    var = c("PRCP", "TMIN", "TMAX"), 
+    date_min = "2017-01-01",
+    date_max = "2017-12-31") %>%
+  mutate(
+    name = recode(id, USW00094728 = "CentralPark_NY"),
+    tmin = tmin / 10,
+    tmax = tmax / 10) %>%
+  select(name, id, everything())
+```
+
+## Bootstrap
+
+```{r}
+set.seed(1)
+
+fcn_boots = function(df) {
+  sample_frac(df, size = 0.5, replace = TRUE)
+}
+
+
+boot_straps = 
+  tibble(
+    strap_number = 1:5000,
+    strap_sample = rerun(5000, fcn_boots(weather_df))
+  )
 ```
 
