@@ -143,7 +143,7 @@ bootstrap_results =
 ## Analyzing Bootstrap Samples - r^2
 
 ```{r}
-bootstrap_results = 
+bootstrap_results2 = 
   boot_straps %>%
   mutate(
     models= map(strap_sample, ~lm(tmax~tmin, data = .x)), 
@@ -154,3 +154,24 @@ bootstrap_results =
 
 ```
 
+## Plot of betas and r^2
+
+```{r}
+plot1 = bootstrap_results %>%
+  ggplot(aes(x = ln_b0b1)) +
+  geom_density(color = "purple")
+
+plot1
+```
+The plot of the log of b0*b1 against density appears approximately normal. Therefore, we can infer that the 95% confidence interval is about (1.925, 2.075)
+
+
+```{r}
+plot2 = bootstrap_results2 %>%
+  ggplot(aes(x = r.squared)) +
+  geom_density(color = "purple")
+
+plot2
+```
+
+The plot of the R2 against the density is approximately normal. Therefore, we can infer that the confidence interval is about (0.8875, 0.9375).
