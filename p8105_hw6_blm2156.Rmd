@@ -87,6 +87,8 @@ cv_bwt %>%
   ggplot(aes(x = model, y = rmse)) + geom_violin(color = "blue")
 ```
 
+Based on the RMSE values, the second comparison regression model performed the best. Comparison regression model 1 was second best. The model that I created based on literature and a hypothesized structure performed the worst with the highest RMSE value after comparing the models using a cross-validation prediction error method. 
+
 # Problem 2
 
 ```{r}
@@ -163,7 +165,7 @@ plot1 = bootstrap_results %>%
 
 plot1
 ```
-The plot of the log of b0*b1 against density appears approximately normal. Therefore, we can infer that the 95% confidence interval is about (1.925, 2.075)
+The plot of the log of b0b1 against density appears approximately normal. This could be due to the log transformation that was performed. Therefore, we can infer that the 95% confidence interval for log(b0b1) for this plot is about (1.925, 2.075)
 
 
 ```{r}
@@ -174,4 +176,4 @@ plot2 = bootstrap_results2 %>%
 plot2
 ```
 
-The plot of the R2 against the density is approximately normal. Therefore, we can infer that the confidence interval is about (0.8875, 0.9375).
+The plot of the R2 against the density is slightly left-skewed. The 95% confidence intervals for r^2 for this plot are about equal to (0.8875, 0.9375).
